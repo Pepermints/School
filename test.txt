@@ -1,0 +1,32 @@
+gradient descent: the explanation file
+
+x_i : input
+Yi: measured output
+h(Xi) : hypothesis function 
+In example: h(Xi) = theta_0 + theta_1 * x_1 + etc
+m: number of training samples
+
+The cost function:
+J(theta) = 1/m * Sum[1 to m](h(x_i, theta) - y)^2 ;
+
+we want the minimum cost = least difference between predicted value and 
+measured value
+
+min(J(theta)) - as a function of theta: find best theta values to have 
+minimum cost function
+
+J(theta) = 1/m * Sum((x*theta - y)^2)
+dJ/dtheta = 1/m * Sum(2*x * (x*theta - y))
+
+dJ/dtheta will be negatif if slope goes down
+positif if slope goes up
+--> wi = wi - dJ/dtheta * modifier 
+(dJ/dtheta just gives the direction and how far it is)
+
+.........
++ really easy principle 
+- finds different local minima depending on init values of weights
+.........
+
+in terms of matrix.. 
+
