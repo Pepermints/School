@@ -6,20 +6,19 @@
 clear all
 
 % Parameters
-N_input = 10;       %number of input
+N_input = 10;       %number of input(a.k. Granule cells)
+                    %N_output = 1 (Purkinje cell)
 N_cycles = 1000;    %number of cycles
+alpha = 0.01;       %gradient descent 'speed'
 
-G = zeros(N_input, N_cycles);   % Granule Cells (input) 
-P = zeros(1, N_cycles);         % single Purkinje cell 'measured' output 
-w = zeros(N_input, 1);          % weight from Granule cells to Purkinje cell
+G = rand(N_input, N_cycles) >= 0.5;   % Granule Cells (input) 
+P = rand(1, N_cycles) >= 0.5;         % single Purkinje cell 'measured' output 
+w = rand(N_input, 1) >= 0.5;          % weight from Granule cells to Purkinje cell
 
-delta_w = w;
+delta_w = w;                          % temporary values at each cycle
+
 for t=1:N_cycles
-    error = G(:,t)*w - P(:,t);
-    
-    for i=1:N_input
-        delta_w(i,1) = sum( error.*G(:,i));
-    end
-    
+    error = sum(w.*G(:,t)) - P(1,t);
+    delta_w = alpha * error * G(:, t);
     w = w - delta_w;
 end
