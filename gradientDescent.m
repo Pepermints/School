@@ -4,6 +4,9 @@ function [ weights_fin_e,  weights_fin_i] = gradientDescent( weights_init_e, alp
     error = (sum(weights_init_e.*G)+ sum(weights_init_i.*I) >= firingThreshold) - P;
 
     weights_fin_e = weights_init_e - alpha_e * error * G;
+    weights_fin_e = weights_fin_e.* (weights_fin_e > 0);    %lower boundary at 0  
+    
     weights_fin_i = weights_init_i - alpha_i * error * I;
+    weights_fin_i = weights_fin_i.* (weights_fin_i < 0);    %upper boundary at 0
 end
 
