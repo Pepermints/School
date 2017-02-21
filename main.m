@@ -1,4 +1,4 @@
-% Date: 09.10.16 
+% Date: 20.02.16 
 % By: Tunvez Boulic
 % Title: Granule Cell to Purkinje Cell model - learning by gradient descent
 
@@ -6,28 +6,42 @@
 clear all
 
 % Parameters
-N_input = 10;       %number of input(a.k. Granule cells)
-N_cycles = 2000;    %number of cycles
-N_patterns = 3;     %number of patterns
-alpha = 0.01;       %gradient descent 'speed'
+N_patterns = 50;        %number of patterns to learn
+firingThreshold = 0;    %if the sum of the weights*x is above this threshold, y = 1
+
+%Inputs: e: excitatory / i: inhibitory
+N_input_e = 100;                    %number of excitatory input(a.k.a Granule cells)
+alpha_e = 0.01;                     %learning speed of excitory cell (gradient descent 'speed')                   
+init_w_e = rand(N_input_e, 1);      %initial weight initialized randomly between 0 & 1
+                                       
+N_input_i = 100;                    %number of inhibitory input
+alpha_i = 0.01;                     %learning speed of inhibitory cell (gradient descent 'speed')                  
+init_w_i = -rand(N_input_i, 1);     %initial weight initialized randomly between -1 & 0
+
+
+% Simulation
+N_cycles = 1500;                    %number of cycles
 
 % Patterns generation
-G = rand(N_input, N_patterns) >= 0.5;       % Granule Cells (input) 
+G = rand(N_input_e, N_patterns) >= 0.5;     % Granule Cells (excitory input) 
+I = rand(N_input_e, N_patterns) >= 0.5;     % Inhibitory Cells
 P = rand(1, N_patterns) >= 0.5;             % single Purkinje cell 'measured' output 
 
-% Initial values                        
-w = ones(N_input, 1) * 0.5;                 % initial weight from Granule cells to Purkinje cell
-weights_history = w;
+                                            
+                                            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[ weights_history_e, weights_history_i, error ] = run(N_cycles, firingThreshold, N_patterns, P, G, alpha_e, init_w_e, I, alpha_i, init_w_i);
 
-% Run the cycles
-patterns = randi([1 3], 1, N_cycles);       % pattern occurences
-for t=1:N_cycles
-    w = gradientDescent(w, alpha, G(:, patterns(t)), P(1, patterns(t)));
-    weights_history = [weights_history, w];
-end
+% %run with alpha = 0.01:0.01:0.05
+% for j = 1:5
+%    run(0.01*j, init_w, N_cycles, N_patterns, P, G, firingThreshold); 
+% end
 
-%Testing
-plot(0:N_cycles, weights_history);
-error_1 = sum(w.*G(:, 1)) - P(1, 1) 
-error_2 = sum(w.*G(:, 2)) - P(1, 2)
-error_3 = sum(w.*G(:, 3)) - P(1, 3)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESULT CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure
+plot(0:N_cycles,  weights_history_e);
+figure
+plot(0:N_cycles,  weights_history_i);
+error_percentage = size(find(error),2)/size(error,2)
+
